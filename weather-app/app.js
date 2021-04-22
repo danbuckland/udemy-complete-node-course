@@ -1,9 +1,21 @@
-// http://api.weatherstack.com/current?access_key=81e5dffe097972a0bbce5e1f72abe8d1&query=sw11
-
 import { geocode } from './utils/geocode.js'
+import { forecast } from './utils/forecast.js'
 
-geocode('Clove Hitch Quay', (error, data) => {
-  console.log('Error', error)
-  console.log('Data', data)
-})
+const location = process.argv[2]
 
+if (!location) {
+  console.log('Please provide a signle location name wrapped in quotes')
+} else {
+  geocode(location, (error, geocodeData) => {
+    if (error) {
+      return console.log(error)
+    }
+    forecast(geocodeData.latitude, geocodeData.longitude, (error, forecastData) => {
+      if (error) {
+        return console.log(error)
+      }
+      console.log(geocodeData.location)
+      console.log(forecastData)
+    })
+  })
+}
