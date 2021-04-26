@@ -1,13 +1,23 @@
 import path from 'path'
 import { fileURLToPath } from 'url'
 import express from 'express'
+import hbs from 'hbs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const publicDirectoryPath = path.join(__dirname, '../public')
 
 const app = express()
 
+// Define paths for Express config
+const publicDirectoryPath = path.join(__dirname, '../public')
+const viewsPath = path.join(__dirname, '../templates/views')
+const partialsPath = path.join(__dirname, '../templates/partials')
+
+// Setup Handlebars engine and views location
+app.set('views', viewsPath)
 app.set('view engine', 'hbs')
+hbs.registerPartials(partialsPath)
+
+// Setup static directory to serve
 app.use(express.static(publicDirectoryPath))
 
 app.get('', (req, res) => {
@@ -27,6 +37,7 @@ app.get('/about', (req, res) => {
 app.get('/help', (req, res) => {
   res.render('help', {
     title: 'Help',
+    name: 'Dan Buckland',
     message: 'How can I help you?'
   })
 })
@@ -36,6 +47,22 @@ app.get('/weather', (req, res) => {
     forecast: 'It\'s sunny, what about it?',
     location: 'London'
   }])
+})
+
+app.get('/help/*', (req, res) => {
+  res.render('404', {
+    title: '404',
+    message: 'Help article not found',
+    name: 'Dan Buckland'
+  })
+})
+
+app.get('*', (req, res) => {
+  res.render('404', {
+    title: '404',
+    message: 'Page not found',
+    name: 'Dan Buckland'
+  })
 })
 
 app.listen(3000, () => {
