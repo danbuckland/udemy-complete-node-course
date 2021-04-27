@@ -4,7 +4,7 @@ import { forecast } from './utils/forecast.js'
 const location = process.argv[2]
 
 if (!location) {
-  console.log('Please provide a signle location name wrapped in quotes')
+  console.log('Please provide a single location name wrapped in quotes')
 } else {
   geocode(location, (error, { latitude, longitude, location } = {}) => {
     if (error) {
