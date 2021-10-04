@@ -1,6 +1,5 @@
 import request from 'postman-request'
 
-
 export const forecast = (latitude, longitude, callback) => {
   const url =
     'http://api.weatherstack.com/current?access_key=81e5dffe097972a0bbce5e1f72abe8d1&query=' +
@@ -12,7 +11,7 @@ export const forecast = (latitude, longitude, callback) => {
       callback('Something has gone wrong', undefined)
     } else {
       const { temperature, weather_descriptions, feelslike } = body.current
-      callback(undefined, `It's ${weather_descriptions[0].toLowerCase()} and ${temperature}°c outside. It feels like ${feelslike}°c.`)
+      callback(undefined, `It's ${body.location.localtime} and ${weather_descriptions[0].toLowerCase()} with an outside temperature of ${temperature}°c. It feels like ${feelslike}°c.`)
     }
   })
 }
