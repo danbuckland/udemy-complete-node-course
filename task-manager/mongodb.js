@@ -14,21 +14,47 @@ MongoClient.connect(
     }
 
     const db = client.db(databaseName)
-    db.collection('tasks')
-      .findOne({ _id: new ObjectId('615d9aee3f082507597e7259') })
-      .then((task) => console.log(task))
-      .catch((err) => console.log(err))
+    const userCollection = db.collection('users')
+    const taskCollection = db.collection('tasks')
 
-    db.collection('tasks')
-      .find({ completed: false })
-      .toArray()
-      .then((tasks) => {
-        if (tasks.length === 0) {
-          console.log('All tasks are completed!')
-        } else {
-          console.log(tasks)
+    const completeAllTasks = taskCollection.updateMany(
+      {
+        completed: false
+      },
+      {
+        $set: {
+          completed: true
         }
-      })
-      .catch((err) => console.log(err))
+      }
+    )
+
+    taskCollection.deleteOne({
+      description: 'Water the plant'
+    }).then((result) => {
+      console.log(result)
+    }).catch((error) => {
+      console.log(error)
+    })
+
+    // completeAllTasks.then((result) => {
+    //   console.log(`Completed ${result.modifiedCount} tasks`)
+    // }).catch((error) => {
+    //   console.log('Something went wrong completing tasks')
+    // })
+
+    // userCollection.updateOne(
+    //     { _id: new ObjectId('615ee9d87a6d2ffeae1982cb') },
+    //     {
+    //       $inc: {
+    //         age: -1,
+    //       },
+    //     }
+    //   )
+    //   .then((result) => {
+    //     console.log(result)
+    //   })
+    //   .catch((error) => {
+    //     console.log(error)
+    //   })
   }
 )
