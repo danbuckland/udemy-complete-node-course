@@ -1,12 +1,13 @@
-import mongoose from "mongoose"
+import mongoose from 'mongoose'
 import validator from 'validator'
 import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   age: {
     type: Number,
@@ -15,7 +16,7 @@ const userSchema = new mongoose.Schema({
       if (value < 0) {
         throw new Error('Age must be a positive number')
       }
-    }
+    },
   },
   email: {
     type: String,
@@ -27,7 +28,7 @@ const userSchema = new mongoose.Schema({
       if (!validator.isEmail(value)) {
         throw new Error('Email is invalid')
       }
-    }
+    },
   },
   password: {
     type: String,
@@ -38,9 +39,27 @@ const userSchema = new mongoose.Schema({
       if (password.includes('password')) {
         throw new Error('Password should not be "password"')
       }
-    }
-  }
+    },
+  },
+  tokens: [
+    {
+      token: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 })
+
+userSchema.methods.generateAuthToken = async function () {
+  const user = this
+  const token = jwt.sign({ _id: user._id.toString() }, 'Thisisasecret')
+  
+  user.tokens.push({ token })
+  await user.save()
+
+  return token
+}
 
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email })
@@ -48,12 +67,11 @@ userSchema.statics.findByCredentials = async (email, password) => {
 
   const isMatch = await bcrypt.compare(password, user.password)
 
-  if (!isMatch) throw new Error ('Unable to log in')
+  if (!isMatch) throw new Error('Unable to log in')
 
   return user
 }
 // Hash the plaintext password before saving
-
 
 userSchema.pre('save', async function (next) {
   const user = this

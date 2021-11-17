@@ -10,9 +10,18 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const app = express()
 const port = process.env.PORT || 3000
+const inMaintenance = true
 
 // Define paths for Express config
 const publicDirectoryPath = path.join(__dirname, '../public')
+
+app.use((req, res, next) => {
+  if (inMaintenance === true) {
+    res.status(503).send('Ongoing maintenance')
+  } else {
+    next()
+  }
+})
 
 // Setup static directory to serve
 app.use(express.json())
@@ -24,10 +33,7 @@ app.listen(port, () => {
 
 const myFunction = async () => {
   const token = jwt.sign({_id: 'abc123'}, 'thisisasecretshh!', { expiresIn: '24 hours'})
-  console.log(token)
-
   const data = jwt.verify(token, 'thisisasecretshh!')
-  console.log(data)
 }
 
 myFunction()
