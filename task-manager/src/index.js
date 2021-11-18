@@ -10,7 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const app = express()
 const port = process.env.PORT || 3000
-const inMaintenance = true
+const inMaintenance = false
 
 // Define paths for Express config
 const publicDirectoryPath = path.join(__dirname, '../public')
