@@ -4,6 +4,8 @@ import express from 'express'
 import './db/mongoose.js'
 import userRouter from './routers/user.js'
 import taskRouter from './routers/task.js'
+import Task from './models/task.js'
+import User from './models/user.js'
 import jwt from 'jsonwebtoken'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -31,9 +33,14 @@ app.listen(port, () => {
   console.log('Server is up on port ' + port)
 })
 
-const myFunction = async () => {
-  const token = jwt.sign({_id: 'abc123'}, 'thisisasecretshh!', { expiresIn: '24 hours'})
-  const data = jwt.verify(token, 'thisisasecretshh!')
+const main = async () => {
+  // const task = await Task.findById('61a0f7f1385b99d6305074c1')
+  // await task.populate('owner')
+  // console.log(task.owner)
+
+  // const user = await User.findById('61a0f7e6385b99d6305074bb')
+  // await user.populate('tasks')
+  // console.log(user.tasks)
 }
 
-myFunction()
+main()
